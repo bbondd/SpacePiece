@@ -41,8 +41,8 @@ if size(matrix, 2) ~= rank(matrix) + 1 || matrix(matrixRank,matrixRank) == 0
 end
 
 coordinate = matrix;
-coordinate(:,[1 : 1 : matrixRank]) = [];
-coordinate([matrixRank + 1 : 1 :size(matrix, 1)], :) = [];
+coordinate(:,1 : 1 : matrixRank) = [];
+coordinate(matrixRank + 1 : 1 :size(matrix, 1), :) = [];
 coordinate = -coordinate;
 end
 
@@ -78,7 +78,7 @@ lineMatrix(3, :) = [];
 end
 
 function planeMatrix = getViewPlane(viewVector, xyLine)
-if xyLine(3) == 0;%xyLine�� ������ ������ �����϶�
+if xyLine(3) == 0;
     xyLine(3) = 1;
     lawPoint = getViewPoint(viewVector, [xyLine; xyLine(2) -xyLine(1) 0]);
     lawVector = matrixToCoordinate(lawPoint);
@@ -194,15 +194,24 @@ parfor i = 1:1:size(limitPlanesA, 1)
     for j = 1:1:size(limitPlanesB, 1)
         for k = 1:1:size(limitPlanesC, 1)
             tempXYZpoint = [limitPlanesA(i).plane; limitPlanesB(j).plane; limitPlanesC(k).plane];
-            boolA = isXYZpointInLimitPlane(limitPlanesA(i), tempXYZpoint);
-            boolB = isXYZpointInLimitPlane(limitPlanesB(j), tempXYZpoint);
-            boolC = isXYZpointInLimitPlane(limitPlanesC(k), tempXYZpoint);
             
-            if boolA && boolB && boolC
-                A(i).B(j).C(k).xyzPoint = transpose(matrixToCoordinate(tempXYZpoint));
-            else
+            if ~isXYZpointInLimitPlane(limitPlanesA(i), tempXYZpoint);
                 A(i).B(j).C(k).xyzPoint = [];
+                continue;
             end
+
+            if ~isXYZpointInLimitPlane(limitPlanesB(j), tempXYZpoint);
+                A(i).B(j).C(k).xyzPoint = [];
+                continue;
+            end
+            
+            if ~isXYZpointInLimitPlane(limitPlanesC(k), tempXYZpoint);
+                A(i).B(j).C(k).xyzPoint = [];
+                continue;
+            end
+
+            A(i).B(j).C(k).xyzPoint = transpose(matrixToCoordinate(tempXYZpoint));
+
         end
     end
 end
@@ -222,10 +231,7 @@ for i = 1:1:size(limitPlanesA, 1)
     end
 end
 
-
-
-
-xyzPoints([count:1:size(xyzPoints, 1)], :) = [];
+xyzPoints(count:1:size(xyzPoints, 1), :) = [];
 end
 
 function scatterXYZpoints(xyzPoints)
