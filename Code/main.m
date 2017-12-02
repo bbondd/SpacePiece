@@ -178,17 +178,15 @@ for i = 1:1:3
     end
     
     if viewVectors(1, first) == 0 && viewVectors(2, first) == 0
-        viewVectors(3, first) = 1000;
         viewVectors(1, first) = 1;
+        viewVectors(2, first) = 10;
+        viewVectors(3, first) = 1000;
+        disp('Warning !!!');
     end
     
     if viewVectors(3, first) == 0 && viewVectors(3, second) == 0 && rotateAngles(first) == 0 && rotateAngles(second) == 0
-        viewVectors(:, first) = viewVectors(:, first) * 100;
-        viewVectors(3,first) = 1;
-        viewVectors(:, second) = viewVectors(:, second) * 100;
-        viewVectors(3,second) = -1;
-        rotateAngles(first) = pi/9;
-        rotateAngles(second) = pi/9;
+        rotateAngles(first) = pi/6;
+        disp('Warning !!!');
     end
 end
 %
