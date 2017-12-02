@@ -1,21 +1,4 @@
-function main()
-
-vector1 = input('First Vector : '); 
-path1 = input('First Image Path : ');
-rotateAngle1 = input('First Image Rotate Angle : '); 
-
-vector2 = input('Second Vector : '); 
-path2 = input('Second Image Path : ');
-rotateAngle2 = input('Second Image Rotate Angle : ');
-
-vector3 = input('Third Vector : ');
-path3 = input('Third Image Path : ');
-rotateAngle3 = input('Third Image Rotate Angle : ');
-
-vectors = [vector1 vector2 vector3]; 
-paths = char(path1, path2, path3);
-
-rotateAngles = [rotateAngle1 rotateAngle2 rotateAngle3];
+function main(vectors, rotateAngles, paths)
 
 xyzPoints = getXYZpointsFromThreeImages(vectors, paths, rotateAngles);
 
@@ -182,11 +165,26 @@ end
 end
 
 function xyzPoints = getXYZpointsFromThreeImages(viewVectors, filePaths, rotateAngles)
+
+%exception management
+for i = 1:1:3
+    first = mod(i, 3) + 1;
+    if viewVectors(1, first) == 0 && viewVectors(2, first) == 0
+        viewVectors(:, first) = [1;0;1000];
+    end
+
+end
+%exception end
+
 imageA = imread(filePaths(1,:)); imageB = imread(filePaths(2,:)); imageC = imread(filePaths(3,:));
 
 limitPlanesA = getLimitPlanesFromImage(viewVectors(:,1), imageA, rotateAngles(1));
 limitPlanesB = getLimitPlanesFromImage(viewVectors(:,2), imageB, rotateAngles(2));
 limitPlanesC = getLimitPlanesFromImage(viewVectors(:,3), imageC, rotateAngles(3));
+
+viewVectorA = limitPlanesA.viewVector;
+viewVectorB = limitPlanesB.viewVector;
+viewVectorC = limitPlanesC.viewVector;
 
 A(size(limitPlanesA, 1)).B(size(limitPlanesB, 1)).C(size(limitPlanesC, 1)).xyzPoint = [];
 
@@ -236,5 +234,6 @@ end
 
 function scatterXYZpoints(xyzPoints)
 x = xyzPoints(:,1); y = xyzPoints(:,2); z = xyzPoints(:,3);
+figure();
 scatter3(x,y,z,2);
 end
