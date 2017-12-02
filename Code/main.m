@@ -170,6 +170,30 @@ function xyzPoints = getXYZpointsFromThreeImages(viewVectors, filePaths, rotateA
 
 imageA = imread(filePaths(1,:)); imageB = imread(filePaths(2,:)); imageC = imread(filePaths(3,:));
 
+%ecxeption management
+for i = 1:1:3
+    first = i; second = i + 1; 
+    if second == 4
+        second = 1;
+    end
+    
+    if viewVectors(1, first) == 0 && viewVectors(2, first) == 0
+        viewVectors(3, first) = 1000;
+        viewVectors(1, first) = 1;
+    end
+    
+    if viewVectors(3, first) == 0 && viewVectors(3, second) == 0 && rotateAngles(first) == 0 && rotateAngles(second) == 0
+        viewVectors(:, first) = viewVectors(:, first) * 100;
+        viewVectors(3,first) = 1;
+        viewVectors(:, second) = viewVectors(:, second) * 100;
+        viewVectors(3,second) = -1;
+        rotateAngles(first) = pi/9;
+        rotateAngles(second) = pi/9;
+    end
+end
+%
+
+
 limitPlanesA = getLimitPlanesFromImage(viewVectors(:,1), imageA, rotateAngles(1));
 limitPlanesB = getLimitPlanesFromImage(viewVectors(:,2), imageB, rotateAngles(2));
 limitPlanesC = getLimitPlanesFromImage(viewVectors(:,3), imageC, rotateAngles(3));
