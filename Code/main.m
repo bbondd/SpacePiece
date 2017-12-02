@@ -130,31 +130,33 @@ imageColSize = size(image, 2);
 imageHalfRowSize = floor(imageRowSize/2);
 imageHalfColSize = floor(imageColSize/2);
 
-xyPoints = zeros(imageRowSize, 2);
+lineXYpoints = [];
 
 for i = 1:1:imageRowSize
-    st = 0; ed = 0;
+    lineStart = -1; lineEnd = -1;
     for j = 1:1:imageColSize - 1
+        
         if (image(i, j, 1) == 255) && (image(i, j+1, 1) ~= 255)
-            st = j + 1;
-        elseif (image(i,j,1) ~= 255) && (image(i, j+1, 1) == 255)
-            ed = j;
+            lineStart = j + 1;
+        elseif (image(i, j,1) ~= 255) && (image(i, j+1, 1) == 255)
+            lineEnd = j;
+        end
+        
+        if lineStart ~= -1 && lineEnd ~= -1
+            lineXYpoints = [lineXYpoints; i lineStart lineEnd];
+            lineStart = -1;
+            lineEnd = -1;
         end
     end
-    xyPoints(i,1) = st;
-    xyPoints(i,2) = ed;
 end
+
 
 limitPlanes = [];
 
-for i = 1:1:size(xyPoints, 1)
-    if xyPoints(i, 1) == 0 && xyPoints(i, 2) == 0
-        continue;
-    end
-    
-    y = imageHalfRowSize - i;
-    x1 = xyPoints(i, 1) - imageHalfColSize;
-    x2 = xyPoints(i, 2) - imageHalfColSize; 
+for i = 1:1:size(lineXYpoints, 1)
+    y = imageHalfRowSize - lineXYpoints(i, 1);
+    x1 = lineXYpoints(i, 2) - imageHalfColSize;
+    x2 = lineXYpoints(i, 3) - imageHalfColSize; 
     
     rotateMatrix = getRotateMatrix(rotateAngle);
     
@@ -166,25 +168,11 @@ end
 
 function xyzPoints = getXYZpointsFromThreeImages(viewVectors, filePaths, rotateAngles)
 
-%exception management
-for i = 1:1:3
-    first = mod(i, 3) + 1;
-    if viewVectors(1, first) == 0 && viewVectors(2, first) == 0
-        viewVectors(:, first) = [1;0;1000];
-    end
-
-end
-%exception end
-
 imageA = imread(filePaths(1,:)); imageB = imread(filePaths(2,:)); imageC = imread(filePaths(3,:));
 
 limitPlanesA = getLimitPlanesFromImage(viewVectors(:,1), imageA, rotateAngles(1));
 limitPlanesB = getLimitPlanesFromImage(viewVectors(:,2), imageB, rotateAngles(2));
 limitPlanesC = getLimitPlanesFromImage(viewVectors(:,3), imageC, rotateAngles(3));
-
-viewVectorA = limitPlanesA.viewVector;
-viewVectorB = limitPlanesB.viewVector;
-viewVectorC = limitPlanesC.viewVector;
 
 A(size(limitPlanesA, 1)).B(size(limitPlanesB, 1)).C(size(limitPlanesC, 1)).xyzPoint = [];
 
@@ -207,9 +195,8 @@ parfor i = 1:1:size(limitPlanesA, 1)
                 A(i).B(j).C(k).xyzPoint = [];
                 continue;
             end
-
+            
             A(i).B(j).C(k).xyzPoint = transpose(matrixToCoordinate(tempXYZpoint));
-
         end
     end
 end
