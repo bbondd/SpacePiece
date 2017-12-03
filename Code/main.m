@@ -124,7 +124,30 @@ end
 
 end
 
-function limitPlanes = getLimitPlanesFromImage(viewVector, image, rotateAngle)
+function rotatedImage = imageRotate90(image)
+
+imageRowSize = size(image, 1);
+imageColSize = size(image, 2);
+
+tempImage = zeros(imageColSize, imageRowSize, 1);
+
+for i = 1:1:imageRowSize
+    for j = 1:1:imageColSize
+        if image(i, j, 1) == 255
+            tempImage(imageColSize - j + 1, i, 1) = 255;
+        end
+    end
+end
+
+rotatedImage = tempImage;
+end
+
+function limitPlanes = getLimitPlanesFromImage(viewVector, image, rotateAngle, verticalFlag)
+if verticalFlag == 1
+    image = imageRotate90(image);
+    rotateAngle = rotateAngle - pi/2;
+end
+
 imageRowSize = size(image, 1);
 imageColSize = size(image, 2);
 imageHalfRowSize = floor(imageRowSize/2);
@@ -170,6 +193,8 @@ function xyzPoints = getXYZpointsFromThreeImages(viewVectors, filePaths, rotateA
 
 imageA = imread(filePaths(1,:)); imageB = imread(filePaths(2,:)); imageC = imread(filePaths(3,:));
 
+verticalFlag = [0 0 0];
+
 %ecxeption management
 for i = 1:1:3
     first = i; second = i + 1; 
@@ -179,22 +204,23 @@ for i = 1:1:3
     
     if viewVectors(1, first) == 0 && viewVectors(2, first) == 0
         viewVectors(1, first) = 1;
-        viewVectors(2, first) = 10;
+        viewVectors(2, first) = 1;
         viewVectors(3, first) = 1000;
         disp('Warning !!!');
     end
     
     if viewVectors(3, first) == 0 && viewVectors(3, second) == 0 && rotateAngles(first) == 0 && rotateAngles(second) == 0
-        rotateAngles(first) = pi/6;
-        disp('Warning !!!');
+        verticalFlag(first) = 1;
     end
 end
 %
 
 
-limitPlanesA = getLimitPlanesFromImage(viewVectors(:,1), imageA, rotateAngles(1));
-limitPlanesB = getLimitPlanesFromImage(viewVectors(:,2), imageB, rotateAngles(2));
-limitPlanesC = getLimitPlanesFromImage(viewVectors(:,3), imageC, rotateAngles(3));
+limitPlanesA = getLimitPlanesFromImage(viewVectors(:,1), imageA, rotateAngles(1), verticalFlag(1));
+limitPlanesB = getLimitPlanesFromImage(viewVectors(:,2), imageB, rotateAngles(2), verticalFlag(2));
+limitPlanesC = getLimitPlanesFromImage(viewVectors(:,3), imageC, rotateAngles(3), verticalFlag(3));
+
+
 
 A(size(limitPlanesA, 1)).B(size(limitPlanesB, 1)).C(size(limitPlanesC, 1)).xyzPoint = [];
 
