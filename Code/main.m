@@ -266,5 +266,6 @@ end
 function scatterXYZpoints(xyzPoints)
 x = xyzPoints(:,1); y = xyzPoints(:,2); z = xyzPoints(:,3);
 figure();
-scatter3(x,y,z,2);
+
+scatter3(x,y,z,2,z);
 end
