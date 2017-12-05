@@ -207,10 +207,17 @@ for i = 1:1:3
         viewVectors(2, first) = rand() - 0.5;
         viewVectors(3, first) = 1000;
         disp('Warning !!!');
+        disp('Z Image may rotate random angle !!!');
     end
     
     if viewVectors(3, first) == 0 && viewVectors(3, second) == 0 && rotateAngles(first) == 0 && rotateAngles(second) == 0
         verticalFlag(first) = 1;
+        verticalFlag(second) = 0;
+    end
+    
+    if viewVectors(:, first) == viewVectors(:, second)
+        verticalFlag(first) = 1;
+        verticalFlag(second) = 0;
     end
 end
 %
