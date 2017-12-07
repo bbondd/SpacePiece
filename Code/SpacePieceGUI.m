@@ -22,7 +22,7 @@ function varargout = SpacePieceGUI(varargin)
 
 % Edit the above text to modify the response to help SpacePieceGUI
 
-% Last Modified by GUIDE v2.5 01-Dec-2017 23:52:21
+% Last Modified by GUIDE v2.5 07-Dec-2017 13:23:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -409,3 +409,26 @@ function angle3_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in pushbutton5.
+function pushbutton5_Callback(hObject, eventdata, handles)
+set(handles.x1, 'String', '');
+set(handles.y1, 'String', '');
+set(handles.z1, 'String', '');
+set(handles.x2, 'String', '');
+set(handles.y2, 'String', '');
+set(handles.z2, 'String', '');
+set(handles.x3, 'String', '');
+set(handles.y3, 'String', '');
+set(handles.z3, 'String', '');
+set(handles.angle1, 'String', '');
+set(handles.angle2, 'String', '');
+set(handles.angle3, 'String', '');
+set(handles.imagePath1, 'String', '');
+set(handles.imagePath2, 'String', '');
+set(handles.imagePath3, 'String', '');
+
+% hObject    handle to pushbutton5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
