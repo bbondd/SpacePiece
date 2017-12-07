@@ -19,8 +19,8 @@ matrix = rref(matrix);
 matrixRank = rank(matrix);
 
 if size(matrix, 2) ~= rank(matrix) + 1 || matrix(matrixRank,matrixRank) == 0
-    e = MException('wrong matrix', matrix);
-    throw(e);
+    coordinate = -1;
+    return;
 end
 
 coordinate = matrix;
@@ -94,22 +94,18 @@ limitLineA = limitPlane.limitLineA;
 limitLineB = limitPlane.limitLineB;
 xyzCoordinate = matrixToCoordinate(xyzPoint);
 
-try 
-    coordinate1 = matrixToCoordinate([limitLineA; 0 0 1 0]);%z == 0 
-catch e
-    try
-        coordinate1 = matrixToCoordinate([limitLineA; 0 1 0 0]);%y == 0
-    catch e
+coordinate1 = matrixToCoordinate([limitLineA; 0 0 1 0]);%z == 0 
+if coordinate1 == -1
+    coordinate1 = matrixToCoordinate([limitLineA; 0 1 0 0]);%y == 0
+    if coordinate1 == -1
         coordinate1 = matrixToCoordinate([limitLineA; 1 0 0 0]);%x == 0
     end
 end
-    
-try
-    coordinate2 = matrixToCoordinate([limitLineB; 0 0 1 0]);%z == 0
-catch e
-    try
-        coordinate2 = matrixToCoordinate([limitLineB; 0 1 0 0]);%y == 0
-    catch e
+
+coordinate2 = matrixToCoordinate([limitLineB; 0 0 1 0]);%z == 0
+if coordinate2 == -1
+    coordinate2 = matrixToCoordinate([limitLineB; 0 1 0 0]);%y == 0
+    if coordinate2 == -1
         coordinate2 = matrixToCoordinate([limitLineB; 1 0 0 0]);%x == 0
     end
 end
@@ -173,7 +169,6 @@ for i = 1:1:imageRowSize
         end
     end
 end
-
 
 limitPlanes = [];
 
