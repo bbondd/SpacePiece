@@ -6,13 +6,17 @@ space piece presentation.pptx is the presentation file.
 Idea
 
 ![a](./results/idea.png)
+
 Infer original 3D object via the reversed projection of 2D images
 Using Matlab
  
 
+
+
 space definition
 
 ![a](./results/space_definition.png)
+
 
 
 
