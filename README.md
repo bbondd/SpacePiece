@@ -21,3 +21,5 @@ third vector : [1;1;1000]
 third rotate angle : 0
 
 All side of pictures should be white.
+
+space piece presentation.pptx is the presentation file.
