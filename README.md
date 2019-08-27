@@ -8,19 +8,13 @@ Idea
 ![a](./results/idea.png)
 
 Infer original 3D object via the reversed projection of 2D images
+
 Using Matlab
  
 
 
-
-space definition
-
-![a](./results/space_definition.png)
-
-
-
-
 Making an 3D object with maximum 3 projected images
+
 Each images should be projection of target 3D object in random 3 vectors.
 
 
